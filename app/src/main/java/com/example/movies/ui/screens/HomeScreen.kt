@@ -6,9 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,6 +50,8 @@ import com.example.movies.model.Movie
 import com.example.movies.ui.theme.MoviesTheme
 import androidx.compose.ui.text.font.Font
 import com.example.movies.R
+import com.example.movies.model.Country
+import com.example.movies.model.Genre
 import java.util.Locale
 
 
@@ -253,6 +257,156 @@ fun MovieCard(film: Movie, modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize()
+    ) {
+
+        Box {
+
+            Image(
+                painter = painterResource(id = R.drawable.banner),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(582.dp)
+            )
+
+
+            IconButton(
+                onClick = { /*  */ },
+                modifier = Modifier
+                    .padding(22.dp)
+                    .align(Alignment.TopStart)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_back),
+                    contentDescription = "Back",
+                    tint = Color(0xFF0094FF),
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+        }
+
+
+        Text(
+            text = movie.nameRu,
+            style = TextStyle(
+                fontFamily = robotoMedium,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.W600,
+                lineHeight = 16.sp,
+                letterSpacing = 0.sp,
+                textAlign = TextAlign.Left,
+                color = Color(0xFF000000),
+            ),
+            modifier = Modifier
+                .padding(horizontal = 31.dp, vertical = 15.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Left,
+
+            )
+
+
+        Text(
+            text = "Описание фильма: ${movie.kinopoiskId}",
+            modifier = Modifier.padding(horizontal = 31.dp),
+            style = TextStyle(
+                fontFamily = robotoMedium,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.W400,
+                lineHeight = 16.sp,
+                letterSpacing = 0.sp,
+                textAlign = TextAlign.Left,
+                color = Color.Gray,
+            ),
+        )
+
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 31.dp)
+        ) {
+
+            Text(
+                text = "Жанры: ",
+                style = TextStyle(
+                    fontFamily = robotoMedium,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
+                )
+            )
+
+
+            Text(
+                text = movie.genres.joinToString(", "),
+                style = TextStyle(
+                    fontFamily = robotoMedium,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Gray
+                )
+            )
+        }
+
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 31.dp)
+        ) {
+
+            Text(
+                text = "Страны: ",
+                style = TextStyle(
+                    fontFamily = robotoMedium,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
+                )
+            )
+
+
+            Text(
+                text = movie.countries.joinToString(", "),
+                style = TextStyle(
+                    fontFamily = robotoMedium,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Gray
+                )
+            )
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun MovieDetailScreenPreview() {
+    val sampleMovie = Movie(
+        kinopoiskId = 123,
+        nameRu = "Movie Title",
+        genres = listOf(Genre("Action")),
+        year = 2024,
+        posterUrl = "http://kinopoiskapiunofficial.tech/images/posters/kp/263531.jpg",
+        imdbId = "123",
+        nameEn = "Movie Title",
+        nameOriginal = "Movie Title",
+        countries = listOf(Country("Country")),
+        ratingKinopoisk = 5.5,
+        ratingImdb = 5.5,
+        type = "FILM",
+
+
+        )
+    MoviesTheme {
+        MovieDetailScreen(movie = sampleMovie)
     }
 }
 
