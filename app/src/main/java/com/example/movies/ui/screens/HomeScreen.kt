@@ -6,11 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,13 +43,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-
 import com.example.movies.model.Movie
 import com.example.movies.ui.theme.MoviesTheme
 import androidx.compose.ui.text.font.Font
 import com.example.movies.R
-import com.example.movies.model.Country
-import com.example.movies.model.Genre
 import java.util.Locale
 
 
@@ -63,6 +58,7 @@ val robotoMedium = FontFamily(
 @Composable
 fun HomeScreen(
     movieUiState: MovieUiState,
+    onItemClick: (Movie) -> Unit,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -70,7 +66,8 @@ fun HomeScreen(
     when (movieUiState) {
         is MovieUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
         is MovieUiState.Success -> PhotosListScreen(
-            movieUiState.photos, contentPadding = contentPadding, modifier = modifier.fillMaxWidth()
+            movieUiState.photos, onItemClick,
+            contentPadding = contentPadding, modifier = modifier.fillMaxWidth()
         )
 
         is MovieUiState.Error -> ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
@@ -139,6 +136,7 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
 @Composable
 fun PhotosListScreen(
     photos: List<Movie>,
+    onItemClick: (Movie) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -177,7 +175,8 @@ fun PhotosListScreen(
                     photo,
                     modifier = modifier
                         .padding(4.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    onClick = { onItemClick(photo) }
                 )
                 Spacer(modifier = Modifier.height(8.dp)) // Add space between items
             }
@@ -187,16 +186,16 @@ fun PhotosListScreen(
 
 
 @Composable
-fun MovieCard(film: Movie, modifier: Modifier = Modifier) {
+fun MovieCard(film: Movie, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Row(
         modifier = modifier
             .padding(8.dp)
             .size(width = 328.dp, height = 93.dp)
             .clip(MaterialTheme.shapes.medium)
             .background(Color.White)
-            .clickable { /* Handle click action if needed */ }
+            .clickable(onClick = onClick)
     ) {
-        // Left part - Image
+
         Box(
             modifier = Modifier
                 .padding(8.dp)
@@ -215,7 +214,6 @@ fun MovieCard(film: Movie, modifier: Modifier = Modifier) {
             )
         }
 
-        // Right part - Title and Description
         Column(
             modifier = Modifier
                 .fillMaxHeight()
@@ -262,16 +260,20 @@ fun MovieCard(film: Movie, modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier) {
+fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier, onBack: () -> Unit) {
     Column(
         modifier = modifier.fillMaxSize()
     ) {
 
         Box {
 
-            Image(
-                painter = painterResource(id = R.drawable.banner),
-                contentDescription = null,
+            AsyncImage(
+                model = ImageRequest.Builder(context = LocalContext.current).data(movie.posterUrl)
+                    .crossfade(true).build(),
+                error = painterResource(R.drawable.ic_broken_image),
+                placeholder = painterResource(R.drawable.loading_img),
+                contentDescription = stringResource(R.string.movie_photo),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(582.dp)
@@ -279,9 +281,9 @@ fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier) {
 
 
             IconButton(
-                onClick = { /*  */ },
+                onClick = onBack,
                 modifier = Modifier
-                    .padding(22.dp)
+                    .padding(horizontal = 20.dp, vertical = 80.dp)
                     .align(Alignment.TopStart)
             ) {
                 Icon(
@@ -345,7 +347,7 @@ fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier) {
 
 
             Text(
-                text = movie.genres.joinToString(", "),
+                text = movie.genres.map { it.genre }.joinToString(", "),
                 style = TextStyle(
                     fontFamily = robotoMedium,
                     fontSize = 14.sp,
@@ -373,7 +375,7 @@ fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier) {
 
 
             Text(
-                text = movie.countries.joinToString(", "),
+                text = movie.countries.map { it.country }.joinToString(", "),
                 style = TextStyle(
                     fontFamily = robotoMedium,
                     fontSize = 14.sp,
@@ -382,31 +384,6 @@ fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier) {
                 )
             )
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun MovieDetailScreenPreview() {
-    val sampleMovie = Movie(
-        kinopoiskId = 123,
-        nameRu = "Movie Title",
-        genres = listOf(Genre("Action")),
-        year = 2024,
-        posterUrl = "http://kinopoiskapiunofficial.tech/images/posters/kp/263531.jpg",
-        imdbId = "123",
-        nameEn = "Movie Title",
-        nameOriginal = "Movie Title",
-        countries = listOf(Country("Country")),
-        ratingKinopoisk = 5.5,
-        ratingImdb = 5.5,
-        type = "FILM",
-
-
-        )
-    MoviesTheme {
-        MovieDetailScreen(movie = sampleMovie)
     }
 }
 

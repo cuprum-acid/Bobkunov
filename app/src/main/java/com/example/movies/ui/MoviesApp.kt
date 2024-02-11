@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.movies.ui.screens.HomeScreen
+import com.example.movies.ui.screens.MovieDetailScreen
 import com.example.movies.ui.screens.MovieViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,11 +28,21 @@ fun MoviesApp() {
         ) {
             val movieViewModel: MovieViewModel =
                 viewModel(factory = MovieViewModel.Factory)
-            HomeScreen(
-                movieUiState = movieViewModel.movieUiState,
-                retryAction = movieViewModel::getMovies,
-                contentPadding = it
-            )
+
+            if (movieViewModel.selectedMovie.value != null) {
+                val selectedMovie = movieViewModel.selectedMovie.value!!
+                MovieDetailScreen(
+                    movie = selectedMovie,
+                    onBack = { movieViewModel.clearSelectedMovie() }
+                )
+            } else {
+                HomeScreen(
+                    movieUiState = movieViewModel.movieUiState,
+                    onItemClick = { movie -> movieViewModel.setSelectedMovie(movie) },
+                    retryAction = movieViewModel::getMovies,
+                    contentPadding = it,
+                )
+            }
         }
     }
 }

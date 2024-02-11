@@ -63,4 +63,14 @@ class MovieViewModel(private val movieRepository: MovieRepository) : ViewModel()
         }
     }
 
+    val selectedMovie = mutableStateOf<Movie?>(null)
+
+    fun setSelectedMovie(movie: Movie) {
+        selectedMovie.value = movie
+    }
+
+    fun clearSelectedMovie() {
+        selectedMovie.value = null
+    }
+
 }
