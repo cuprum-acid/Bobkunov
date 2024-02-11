@@ -65,6 +65,5 @@ google-services.json
 /local.properties
 /.idea
 /build
-gradle.properties
 .navigation
 /captures
