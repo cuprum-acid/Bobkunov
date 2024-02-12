@@ -15,6 +15,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import com.example.movies.data.MovieRepository
 import com.example.movies.model.Movie
+import com.example.movies.model.MovieDetail
 
 
 /**
@@ -53,6 +54,19 @@ class MovieViewModel(private val movieRepository: MovieRepository) : ViewModel()
         }
     }
 
+    fun getMovieDetail(kinopoiskId: Int) {
+        viewModelScope.launch {
+            try {
+                val movieDetail = movieRepository.getMovieDetail(kinopoiskId)
+                setSelectedMovieDetail(movieDetail)
+            } catch (e: IOException) {
+                // Handle network error
+            } catch (e: HttpException) {
+                // Handle HTTP error
+            }
+        }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -64,13 +78,22 @@ class MovieViewModel(private val movieRepository: MovieRepository) : ViewModel()
     }
 
     val selectedMovie = mutableStateOf<Movie?>(null)
+    val selectedMovieDetail = mutableStateOf<MovieDetail?>(null)
 
     fun setSelectedMovie(movie: Movie) {
         selectedMovie.value = movie
+        // When selecting a new movie, clear previous movie detail
+        selectedMovieDetail.value = null
+        getMovieDetail(movie.kinopoiskId)
+    }
+
+    private fun setSelectedMovieDetail(movieDetail: MovieDetail) {
+        selectedMovieDetail.value = movieDetail
     }
 
     fun clearSelectedMovie() {
         selectedMovie.value = null
+        selectedMovieDetail.value = null
     }
 
 }

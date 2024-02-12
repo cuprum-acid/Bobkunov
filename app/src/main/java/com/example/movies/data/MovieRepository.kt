@@ -17,5 +17,6 @@ class NetworkMovieRepository(
     private val movieApiService: MovieApiService
 ) : MovieRepository {
     override suspend fun getMovies(): List<Movie> = movieApiService.getMovies().items
-    override suspend fun getMovieDetail(kinopoiskId: Int): MovieDetail = movieApiService.getMovieDetail(kinopoiskId)
+    override suspend fun getMovieDetail(kinopoiskId: Int): MovieDetail =
+        movieApiService.getMovieDetail(kinopoiskId)
 }

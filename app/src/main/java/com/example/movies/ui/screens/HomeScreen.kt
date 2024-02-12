@@ -46,6 +46,7 @@ import coil.request.ImageRequest
 import com.example.movies.model.Movie
 import com.example.movies.ui.theme.MoviesTheme
 import androidx.compose.ui.text.font.Font
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.movies.R
 import java.util.Locale
 
@@ -258,11 +259,15 @@ fun MovieCard(film: Movie, modifier: Modifier = Modifier, onClick: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier, onBack: () -> Unit) {
+    val viewModel = viewModel<MovieViewModel>()
+    val movieDetail = viewModel.selectedMovieDetail.value
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(bottom = 60.dp)
     ) {
 
         Box {
@@ -314,20 +319,21 @@ fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier, onBack: () ->
 
             )
 
-
-        Text(
-            text = "Описание фильма: ${movie.kinopoiskId}",
-            modifier = Modifier.padding(horizontal = 31.dp),
-            style = TextStyle(
-                fontFamily = robotoMedium,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.W400,
-                lineHeight = 16.sp,
-                letterSpacing = 0.sp,
-                textAlign = TextAlign.Left,
-                color = Color.Gray,
-            ),
-        )
+        movieDetail?.let { detail ->
+            Text(
+                text = detail.description,
+                modifier = Modifier.padding(horizontal = 31.dp),
+                style = TextStyle(
+                    fontFamily = robotoMedium,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.W400,
+                    lineHeight = 16.sp,
+                    letterSpacing = 0.sp,
+                    textAlign = TextAlign.Left,
+                    color = Color.Gray,
+                ),
+            )
+        }
 
 
         Row(
