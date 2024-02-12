@@ -1,9 +1,11 @@
 package com.example.movies.network
 
 import com.example.movies.model.Movie
+import com.example.movies.model.MovieDetail
 import com.example.movies.model.MovieResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Path
 
 private const val API_KEY = "e30ffed0-76ab-4dd6-b41f-4c9da2b2735b"
 
@@ -17,4 +19,8 @@ interface MovieApiService {
     @Headers("X-API-KEY: $API_KEY")
     @GET("films/collections?type=TOP_POPULAR_MOVIES&page=1")
     suspend fun getMovies(): MovieResponse
+
+    @Headers("X-API-KEY: $API_KEY")
+    @GET("films/{kinopoiskId}")
+    suspend fun getMovieDetail(@Path("kinopoiskId") kinopoiskId: Int): MovieDetail
 }
