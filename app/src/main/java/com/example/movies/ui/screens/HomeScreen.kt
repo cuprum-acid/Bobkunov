@@ -161,7 +161,8 @@ fun PhotosListScreen(
                 IconButton(onClick = { /* Handle search icon click */ }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = "Search"
+                        contentDescription = "Search",
+                        tint = Color(0xFF0094FF),
                     )
                 }
             },
@@ -179,7 +180,7 @@ fun PhotosListScreen(
                         .fillMaxWidth(),
                     onClick = { onItemClick(photo) }
                 )
-                Spacer(modifier = Modifier.height(8.dp)) // Add space between items
+                Spacer(modifier = Modifier.height(0.dp)) // Add space between items
             }
         }
     }
@@ -231,7 +232,7 @@ fun MovieCard(film: Movie, modifier: Modifier = Modifier, onClick: () -> Unit) {
                     textAlign = TextAlign.Left,
                     color = Color(0xFF000000),
                 ),
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(8.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -295,7 +296,9 @@ fun MovieDetailScreen(movie: Movie, modifier: Modifier = Modifier, onBack: () ->
                     painter = painterResource(id = R.drawable.ic_arrow_back),
                     contentDescription = "Back",
                     tint = Color(0xFF0094FF),
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(Color.White)
                 )
             }
         }
